@@ -9,7 +9,7 @@ colorize(text, color = "red", style = NULL, code = NULL)
 \arguments{
 \item{text}{text that you want colorize}
 
-\item{color}{one of colors from \code{.colors}, see simpleSignal::.colors}
+\item{color}{one of colors from \code{.colors}, see \code{simpleSignal::.colors}}
 
 \item{style}{\code{crayon} class object with style from \code{crayon} package}
 
@@ -22,8 +22,9 @@ text with tags which will colorize text if printed onto terminal
 If your terminal supports colors, this will colorize your message!
 }
 \details{
-This function utilize some hidden variables: \code{.colorize} which is
-initialized on startup with \code{crayon::has_color} and will inform this
+This function utilize some global variable: \code{colorize} in environment
+\code{signals.options} which is initialized on startup with
+\code{crayon::has_color} and will inform this
 function if terminal does support colors, and \code{.colors} which contain
 set of predefined colors and their codes.
 

@@ -16,14 +16,14 @@
 #' \code{warn} is colored \code{warning}, without call and with immediate
 #' effect (by default, \code{warning} throws warnings after all code is executed,
 #' \code{warn} throws warning message immediately).
-#' As a secondary effect, it sets global variable
-#' \code{.warning_occurred}, which can be later used to throw \code{stop}
+#' As a secondary effect, it sets variable (in environment \code{signals.options})
+#' \code{warning_occurred}, which can be later used to throw \code{stop}
 #' signal.
 #'
-#' \code{warning_occurred} returns TRUE if variable \code{.warning_occurred}
-#' exist and its true.
+#' \code{warning_occurred} returns TRUE if variable \code{warning_occurred} in
+#' environment \code{signals.options} is true.
 #'
-#' \code{stop_if_warn} throw \code{stop} signal if variable \code{warning_occured}
+#' \code{stop_if_warn} throw \code{stop} signal if variable \code{warning_occurred}
 #' is set to \code{TRUE}, which is typically done by \code{warn}. This signal
 #' is treated similarly to \code{quit} signal with respect to R quiting with
 #' error (e.g., GNU make will recognize it as error and stops).
@@ -37,7 +37,7 @@
 #' \code{logme} will log text to previously initialized log file
 #'
 #' \code{log_init} will initialize log file and save this name into global
-#' variable \code{.log_file}.
+#' variable \code{log_file} in environment \code{signals.options}.
 #'
 #' \code{error} will print colored message and throw \code{stop} signal
 #'
@@ -82,7 +82,7 @@ info = function(text, color="light blue"){
 #' @rdname signals
 #' @export
 warn = function(text, color="light red", log=FALSE){
-    .warning_occurred <<- TRUE
+    set_option("warning_occurred", TRUE)
     if(log){
         logme(text)
         }
@@ -93,18 +93,15 @@ warn = function(text, color="light red", log=FALSE){
 #' @rdname signals
 #' @export
 warning_occurred = function(){
-    return(exists(".warning_occurred") && .warning_occurred)
+    return(get_option("warning_occurred"))
     }
 
 
 #' @rdname signals
 #' @export
 stop_if_warn = function(color="light red"){
-    if(exists(".warning_occurred") && .warning_occurred){
-        stop(
-            colorize("Stopping execution because of warning.", color),
-            call.=FALSE
-            )
+    if(warning_occurred()){
+        error("Stopping execution because of warning.", color)
         }
     }
 
@@ -119,8 +116,9 @@ pass = function(color="light green"){
 #' @rdname signals
 #' @export
 logme = function(text, color="light red"){
-    if(exists(".log_file")){
-        cat(text, file=.log_file, append=TRUE, sep="\n")
+    log_file = get_option(log_file)
+    if(!is.null(log_file)){
+        cat(text, file=log_file, append=TRUE, sep="\n")
         } else {
         stop(colorize("Log file was not initialized!", color))
         }
@@ -130,8 +128,8 @@ logme = function(text, color="light red"){
 #' @rdname signals
 #' @export
 log_init = function(file, append=FALSE){
-    .log_file <<- file
-    cat("", file=.log_file, append=append)
+    set_option("log_file", file)
+    cat("", file=file, append=append)
     }
 
 

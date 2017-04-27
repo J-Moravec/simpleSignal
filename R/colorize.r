@@ -2,8 +2,9 @@
 #'
 #' If your terminal supports colors, this will colorize your message!
 #'
-#' This function utilize some hidden variables: \code{.colorize} which is
-#' initialized on startup with \code{crayon::has_color} and will inform this
+#' This function utilize some global variable: \code{colorize} in environment
+#' \code{signals.options} which is initialized on startup with
+#' \code{crayon::has_color} and will inform this
 #' function if terminal does support colors, and \code{.colors} which contain
 #' set of predefined colors and their codes.
 #'
@@ -21,7 +22,7 @@
 #' provide your own color code using \code{code} argument. 
 #'
 #' @param text text that you want colorize
-#' @param color one of colors from \code{.colors}, see simpleSignal::.colors
+#' @param color one of colors from \code{.colors}, see \code{simpleSignal::.colors}
 #' @param style \code{crayon} class object with style from \code{crayon} package
 #' @param code your own color code (number for font type and color)
 #'
@@ -44,7 +45,7 @@
 #' @export
 colorize = function(text, color="red", style=NULL, code=NULL){
     # do not colorize if set to none or terminal does not support this
-    if(color=="none" || .colorize==FALSE){
+    if(color=="none" || get_option("colorize")==FALSE){
         return(text)
         }
 
@@ -100,18 +101,3 @@ colorize = function(text, color="red", style=NULL, code=NULL){
     "yellow" = "1;33",
     "white" = "1;37"
     )
-
-
-#' @export
-.colorize = FALSE
-
-.onLoad = function(libname, pkgname){
-    packageStartupMessage("Checking if your terminal supports colors: ", appendLF=FALSE)
-    if(crayon::has_color()){
-        .colorize <<- TRUE
-        packageStartupMessage(colorize("pass", "light green"))
-        } else {
-        packageStartupMessage("fail")
-        packageStartupMessage("WARNING: Your terminal does not support colors.")
-        }
-    }

@@ -61,14 +61,14 @@ for logging other useful texts or variable states.
 \code{warn} is colored \code{warning}, without call and with immediate
 effect (by default, \code{warning} throws warnings after all code is executed,
 \code{warn} throws warning message immediately).
-As a secondary effect, it sets global variable
-\code{.warning_occurred}, which can be later used to throw \code{stop}
+As a secondary effect, it sets variable (in environment \code{signals.options})
+\code{warning_occurred}, which can be later used to throw \code{stop}
 signal.
 
-\code{warning_occurred} returns TRUE if variable \code{.warning_occurred}
-exist and its true.
+\code{warning_occurred} returns TRUE if variable \code{warning_occurred} in
+environment \code{signals.options} is true.
 
-\code{stop_if_warn} throw \code{stop} signal if variable \code{warning_occured}
+\code{stop_if_warn} throw \code{stop} signal if variable \code{warning_occurred}
 is set to \code{TRUE}, which is typically done by \code{warn}. This signal
 is treated similarly to \code{quit} signal with respect to R quiting with
 error (e.g., GNU make will recognize it as error and stops).
@@ -82,7 +82,7 @@ scripts can be calm and happy.
 \code{logme} will log text to previously initialized log file
 
 \code{log_init} will initialize log file and save this name into global
-variable \code{.log_file}.
+variable \code{log_file} in environment \code{signals.options}.
 
 \code{error} will print colored message and throw \code{stop} signal
 }
